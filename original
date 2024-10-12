@@ -1,0 +1,39 @@
+type Meat = Chicken | Beef | Pork | Fish | Veggie
+
+type Ingredient =
+    | Cheese | Rice | Beans | Salsa | Guacamole | SourCream | Lettuce
+    | Tomato | Onion | Cilantro | PicoDeGallo
+
+type Burrito = Meat option * Ingredient list
+
+let (>>=) burrito f =
+    match burrito with
+    | Some meat, ingredients -> f (Some meat, ingredients)
+    | None, _ -> None, []
+
+let returnBurrito (meat, ingredients) = meat, ingredients
+
+let tortilla = returnBurrito (Some Veggie, [])
+
+let addMeat meat (m, ingredients) = Some meat, ingredients
+
+let addIngredient ingredient (meat, ingredients) =
+    meat, ingredient :: ingredients
+
+let addMissionBurritoIngredients (meat, ingredients) =
+    meat, Cheese :: Rice :: Beans :: ingredients
+
+let holdThe ingredient (meat, ingredients) =
+    meat, List.filter (fun i -> i <> ingredient) ingredients
+
+let burrito =
+    tortilla
+    >>= addMeat Chicken
+    >>= addMissionBurritoIngredients
+    >>= holdThe Cheese
+    >>= addIngredient PicoDeGallo
+    >>= addIngredient Salsa
+    >>= addIngredient Guacamole
+    >>= addIngredient SourCream
+
+printfn "%A" burrito
