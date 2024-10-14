@@ -92,4 +92,23 @@ say (something 32) >>= &halve >>= &halve >>= &halve;
 say (halve 3) ~~ None;
 ```
 
-won't work with Burrito types
+won't work with "Burrito" types as they have custom structure 
+
+
+---
+
+In version 2 of this code, called `burrito-feed.raku`, I am inspired by Wambas comment on my post ...
+
+by a little alchemy with function declaration:
+
+```perl6
+proto infix:«>>=»($ ,$) is prec(prec => ‘f=’) {*}
+multi infix:«>>=»((None $, @), +@ ) { nothing(Meat),[] }
+multi infix:«>>=»($burrito, +(&f, +@args)) {
+    f( |@args, $burrito )
+}
+
+tortilla()
+>>= &add-meat, Beef
+>>= &add-mission-burrito-ingredients
+```
